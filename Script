@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Set your Azure Storage account name
+STORAGE_ACCOUNT_NAME="cloudploader"
+
+# Set your Azure Storage container name
+CONTAINER_NAME="upload"
+
+# Set the local directory containing the files you want to upload
+LOCAL_DIR="C:\Users\travis.gray\Downloads\CloudUploader"
+
+# Check if the Azure CLI is installed
+if ! command -v az &> /dev/null; then
+    echo "Azure CLI is not installed. Please install it before running this script."
+    exit 1
+fi
+
+# Check if the specified directory exists
+if [ ! -d "$LOCAL_DIR" ]; then
+    echo "Local directory does not exist: $LOCAL_DIR"
+    exit 1
+fi
+
+# Log in to Azure if not already logged in
+if ! az account show &> /dev/null; then
+    az login
+fi
+
+# Set the default Azure subscription (if needed)
+# az account set --subscription "your_subscription_id_or_name"
+
+# Create the storage container if it doesn't exist
+if ! az storage container exists --name "$CONTAINER_NAME" --account-name "$STORAGE_ACCOUNT_NAME" &> /dev/null; then
+    az storage container create --name "$CONTAINER_NAME" --account-name "$STORAGE_ACCOUNT_NAME"
+fi
+
+# Upload files to Azure Blob Storage
+echo "Uploading files to Azure Blob Storage..."
+az storage blob upload-batch --destination "$CONTAINER_NAME" --source "$LOCAL_DIR" --account-name "$STORAGE_ACCOUNT_NAME"
+
+# Check the exit status of the az storage blob upload-batch command
+if [ $? -eq 0 ]; then
+    echo "Upload successful."
+else
+    echo "Upload failed."
+fi
