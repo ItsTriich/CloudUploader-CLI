@@ -4,8 +4,9 @@
 </div>
 
 ## Prerequisites
-- [An Azure subscription. Create one for free.](azure.com/free)
-- [An Azure Blob Storage]
+- [An Azure subscription. Create one for free.](https://azure.microsoft.com/en-us/free)
+- [An Azure Blob Storage.](https://learn.microsoft.com/en-us/azure/storage/blobs/)
+
 ## How to setup
 
 1. Clone the code.
